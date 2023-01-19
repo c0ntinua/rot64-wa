@@ -43,7 +43,6 @@
         (local.set $i (i64.const 64))
         (loop $loop
             (call $print_bit_as_block ( call $ith_bit (local.get $x) (local.get $i) ))
-            ;;(call $print_bit_as_block ( call $ith_bit (local.get $x) (local.get $i) ))
             (local.set $i (i64.sub (local.get $i) (i64.const 1))) 
             (br_if $loop (i64.le_s (i64.const 0) (local.get $i) ))
         )
@@ -65,12 +64,9 @@
             (i64.rotl ( call $trident (local.get $x) (i64.add (local.get $i) (i64.const 4))) (i64.const 3))
         )
     )
-   ;; pub fn trident(x : u64 , i : u32) -> u64 { (7u64.rotate_left(i)&x).rotate_right(i) }
-        ;;pub fn wings(x : u64, i : u32) -> u64 {trident(x,i)|(trident(x,i+4).rotate_left(3))}
     (func $eval (param $f i64) (param $i i64) (result i64)
         (i64.rotr (i64.and ( i64.rotl (i64.const 1) (local.get $i) ) (  local.get $f )) (local.get $i))
     )
-    ;;pub fn next(s : u64, f : u64, i : u32) -> u64 { eval(f,wings(s,i) as u32).rotate_left(i+3)}
     (func $next (param $s i64) (param $f i64) (param $i i64) (result i64)
         (i64.rotl (call $eval (local.get $f) (call $wings (local.get $s) (local.get $i))) (i64.add (local.get $i) (i64.const 3)))
     )
@@ -92,8 +88,7 @@
         (local $s i64)
         (local $i i64)
         (local.set $f (call $rand_64))
-        (local.set $s (local.get $f))
-        ;;(call $print_i64_as_blocks (local.get $f))  
+        (local.set $s (local.get $f)) 
         (local.set $i (i64.const 0)) 
         (loop $loop 
             (local.set $s (call $turn (local.get $s) (local.get $f)))
