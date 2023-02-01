@@ -1,5 +1,6 @@
 (module
     (import "wasi_unstable" "fd_write" (func $fd_write (param i32 i32 i32 i32) (result i32)))
+    (import "wasi_unstable" "fd_read" (func $fd_read (param i32 i32 i32 i32) (result i32)))
     (import "wasi_unstable" "random_get" (func $random_get (param i32 i32) (result i32) ))
     (global $stdout i32 (i32.const 1))
     (global $iovecp i32 (i32.const 0))
@@ -83,13 +84,24 @@
         )
         (local.get $r)
     )
-    (func $main (export "_start")
+    (func $get_i32 (result i32)
+        (call $fd_read 
+            (i32.const 0) 
+            (global.get $iovecp) 
+            (global.get $iovecl)
+            (global.get $out)
+        )
+        drop
+        (i32.load (global.get $iovecp))
+    )
+    (func $once
         (local $f i64)
         (local $s i64)
         (local $i i64)
+
         (local.set $f (call $rand_64))
         (local.set $s (local.get $f)) 
-        (local.set $i (i64.const 0)) 
+        (local.set $i (i64.const 0))
         (loop $loop 
             (local.set $s (call $turn (local.get $s) (local.get $f)))
             (call $print_i64_as_blocks (local.get $s))
@@ -98,5 +110,11 @@
             (br_if $loop (i64.ge_s (i64.const 32) (local.get $i)))
         )
         (call $print (i32.const 0x0A))
+    )
+    (func $main (export "_start")
+        (loop $loop
+            (call $once)
+            ( br_if $loop (i32.eq (i32.const 0x71) (call $get_i32)) )
+        )   
     )
 )
