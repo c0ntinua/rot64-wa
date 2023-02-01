@@ -1,6 +1,6 @@
 # rot64-wa
 
-This program creates random elementary cellular automata with 64-bit rules. The three neighbors on each side (and not the current cell itself) are used to determine the transtion.
+This program creates random elementary cellular automata with 64-bit rules. The three neighbors on each side (and not the current cell itself) are used to determine the transtion. The randomly selected rule is also used as the seed, so we see the bits as rule operating on the bits as state. 
 
 It was written in Web Assembly text format by hand, not compiled from some other language.
 
